@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  properties Property[]
+  reviews    Review[]
+  favorites  Favorite[]
+  Membership Membership[]
+
+  @@map("users")
+}
+
+model Property {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String
+  price       Float
+  address     String
+  city        String
+  state       String
+  zipCode     String
+  country     String
+  type        PropertyType
+  status      PropertyStatus @default(AVAILABLE)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  ownerId          Int
+  owner            User       @relation(fields: [ownerId], references: [id])
+  images           Image[]
+  reviews          Review[]
+  favorites        Favorite[]
+  premium          Boolean    @default(false)
+  premiumExpiresAt DateTime?
+
+  @@map("properties")
+}
+
+model Image {
+  id         Int      @id @default(autoincrement())
+  url        String
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  @@map("images")
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  rating     Int // e.g., 1 to 5 stars
+  comment    String
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@map("reviews")
+}
+
+model Favorite {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+  @@map("favorites")
+}
+
+model Membership {
+  id        Int            @id @default(autoincrement())
+  type      MembershipType
+  price     Float
+  userId    Int
+  user      User           @relation(fields: [userId], references: [id])
+  createdAt DateTime       @default(now())
+  expiresAt DateTime
+
+  @@map("memberships")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  CONDO
+  LAND
+  COMMERCIAL
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  SOLD
+  RENTED
+}
+
+enum MembershipType {
+  FREE
+  PREMIUM
+}
