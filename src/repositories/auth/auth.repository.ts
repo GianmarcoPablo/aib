@@ -27,6 +27,7 @@ export class UserRepository {
             const token = TokenAdapter.generateToken(user.id)
             const { password: passwordPass, updatedAt, createdAt, ...rest } = user
             return {
+                ok: true,
                 user: rest,
                 token
             }
@@ -51,6 +52,7 @@ export class UserRepository {
             if (HashPasswordAdapter.comparePassword(password, user.password)) {
                 const { password, updatedAt, createdAt, ...rest } = user
                 return {
+                    ok: true,
                     user: rest,
                     token
                 };

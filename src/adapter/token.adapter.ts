@@ -7,12 +7,7 @@ export class TokenAdapter {
         });
     }
 
-    static async verify(token: string): Promise<any> {
-        return new Promise((resolve) => {
-            jwt.verify(token, "secreto", (err, decoded) => {
-                if (err) return resolve(null)
-                resolve(decoded)
-            })
-        })
+    static verify(token: string) {
+        return jwt.verify(token, "secreto")
     }
 }

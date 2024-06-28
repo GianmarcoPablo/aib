@@ -6,11 +6,12 @@ export class SeedController {
 
     public seedExecute = async (req: Request, res: Response) => {
         try {
+            await prisma.image.deleteMany()
+            await prisma.property.deleteMany()
+            await prisma.profile.deleteMany()
             await prisma.user.deleteMany()
 
-            res.json({
-                msg: "Seed executing"
-            })
+            res.json({ msg: "Seed executing" })
         } catch (error) {
             this.handleError(error, res)
         }

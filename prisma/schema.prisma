@@ -15,17 +15,34 @@ model User {
   email     String   @unique
   password  String
   name      String
-  phone     String?
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   properties Property[]
   reviews    Review[]
   favorites  Favorite[]
   Membership Membership[]
+  Profile    Profile?
 
   @@map("users")
+}
+
+model Profile {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @unique
+  user        User      @relation(fields: [userId], references: [id])
+  avatarUrl   String?
+  bio         String?
+  phone       String?
+  socialLinks String[]
+  country     String?
+  website     String?
+  dateOfBirth DateTime?
+  gender      String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("profiles")
 }
 
 model Property {

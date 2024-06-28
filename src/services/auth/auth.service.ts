@@ -1,6 +1,5 @@
 import { UserRepository } from "../../repositories/auth/auth.repository";
 import { AuthRegisterUserDto } from "../../dtos/auth/auth-register.dto";
-import { UserResponse } from "../../types/user-response.type";
 import { AuthLoginUserDto } from "../../dtos/auth/auth-login.dto";
 
 export class UserService {
