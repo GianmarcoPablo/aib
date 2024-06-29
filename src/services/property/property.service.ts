@@ -23,8 +23,8 @@ export class PropertyService {
         return await this.propertyRepository.getProperty(id);
     }
 
-    async updateProperty(id: number, userId: number, dataProperty: UpdatePropertyDto) {
-        return await this.propertyRepository.updateProperty(id, userId, dataProperty);
+    async updateProperty(id: number, userId: number, dataProperty: UpdatePropertyDto, images: { url: string }[]) {
+        return await this.propertyRepository.updateProperty(id, userId, dataProperty, images);
     }
 
     async deleteProperty(id: number, userId: number) {

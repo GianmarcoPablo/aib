@@ -29,6 +29,40 @@ export class PropertyRepository {
         }
     }
 
+    async updateProperty(id: number, userId: number, dataProperty: UpdatePropertyDto, images: { url: string }[]) {
+        try {
+            // Verificar que la propiedad exista y que el usuario tenga autorización para actualizarla
+            const property = await prisma.property.findUnique({
+                where: { id },
+                include: { images: true }
+            });
+
+            if (!property) throw CustomError.notFound("Property not found");
+            if (property.ownerId !== userId) throw CustomError.unauthorized("You are not authorized to update this property");
+
+            // Actualizar la propiedad
+            const updatedProperty = await prisma.property.update({
+                where: { id },
+                data: {
+                    ...dataProperty,
+                    price: Number(dataProperty.price),
+                    images: {
+                        deleteMany: {}, // Eliminar todas las imágenes actuales
+                        create: images // Crear las nuevas imágenes
+                    }
+                },
+                include: { images: true }
+            });
+
+            return {
+                ok: true,
+                property: updatedProperty
+            };
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
     async getAllProperties() {
         try {
             const properties = await prisma.property.findMany({
@@ -44,32 +78,7 @@ export class PropertyRepository {
         }
     }
 
-    async updateProperty(id: number, userId: number, dataProperty: UpdatePropertyDto) {
-        try {
-            const property = await this.getProperty(id);
 
-            if (Number(property?.property.ownerId) !== userId) throw CustomError.unauthorized("You are not authorized to update this property");
-
-            const updatedProperty = await prisma.property.update({
-                where: {
-                    id
-                },
-                data: {
-                    ...dataProperty,
-                    price: Number(dataProperty.price)
-                },
-                include: { images: true }
-            });
-
-            return {
-                ok: true,
-                property: updatedProperty
-            }
-
-        } catch (error) {
-            this.handleError(error);
-        }
-    }
 
     async getMyProperties(id: number) {
         try {

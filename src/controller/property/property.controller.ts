@@ -16,7 +16,6 @@ export class PropertyController {
             if (error) return res.status(404).json({ error });
 
             const images = (req.files as any).map((file: any) => ({ url: file.filename }));
-            console.log(images)
             const property = await this.propertyService.createProperty(createProfileDto!, userId, images);
             res.json(property);
         } catch (error) {
@@ -49,8 +48,8 @@ export class PropertyController {
             const propertyId = Number(req.params.id);
             const [error, updatePropertyDto] = UpdatePropertyDto.create(req.body);
             if (error) return res.status(404).json({ error });
-
-            const property = await this.propertyService.updateProperty(propertyId, userId, updatePropertyDto!);
+            const multipleImages = (req.files as any).map((file: any) => ({ url: file.filename }));
+            const property = await this.propertyService.updateProperty(propertyId, userId, updatePropertyDto!, multipleImages);
             res.json(property);
         } catch (error) {
             this.handleError(error, res);
