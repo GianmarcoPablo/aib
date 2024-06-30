@@ -11,10 +11,9 @@ export class PropertyService {
         return await this.propertyRepository.createProperty(dataProperty, userId, images);
     }
 
-    async getAllProperties() {
-        return await this.propertyRepository.getAllProperties();
+    async getAllProperties(offset: number, limit: number) {
+        return await this.propertyRepository.getAllProperties(offset, limit);
     }
-
     async getMyProperties(id: number) {
         return await this.propertyRepository.getMyProperties(id);
     }

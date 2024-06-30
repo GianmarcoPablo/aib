@@ -63,9 +63,11 @@ export class PropertyRepository {
         }
     }
 
-    async getAllProperties() {
+    async getAllProperties(offset: number, limit: number) {
         try {
             const properties = await prisma.property.findMany({
+                skip: offset,
+                take: limit,
                 include: { images: true }
             })
 
@@ -77,7 +79,6 @@ export class PropertyRepository {
             this.handleError(error);
         }
     }
-
 
 
     async getMyProperties(id: number) {

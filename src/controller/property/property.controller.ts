@@ -25,7 +25,11 @@ export class PropertyController {
 
     public getAllProperties = async (req: Request, res: Response) => {
         try {
-            const properties = await this.propertyService.getAllProperties();
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 5;
+            const offset = (page - 1) * limit;
+            console.log(offset, limit)
+            const properties = await this.propertyService.getAllProperties(offset, limit);
             res.json(properties);
         } catch (error) {
             this.handleError(error, res);
